@@ -1,0 +1,64 @@
+schema: '2.0'
+stages:
+  make_dataset:
+    cmd: python .\src\data\make_dataset.py .\data\raw\creditcard.csv
+    deps:
+    - path: .\data\raw\creditcard.csv
+      hash: md5
+      md5: e90efcb83d69faf99fcab8b0255024de
+      size: 150828752
+    - path: .\src\data\make_dataset.py
+      hash: md5
+      md5: 5d87ea0853101b748b17af0be510c2ac
+      size: 1314
+    params:
+      params.yaml:
+        make_dataset.seed: 2023
+        make_dataset.test_split: 0.2
+    outs:
+    - path: .\data\processed\
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+  train_model:
+    cmd: python .\src\models\train_model.py .\data\processed\
+    deps:
+    - path: .\data\processed\
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: .\src\models\train_model.py
+      hash: md5
+      md5: 5af92edffd22804f29af18c1efe94bbb
+      size: 1362
+    params:
+      params.yaml:
+        train_model.max_depth: 6
+        train_model.n_estimators: 10
+        train_model.seed: 2023
+    outs:
+    - path: .\models\
+      hash: md5
+      md5: 4e90d300b135a81fb7b4cb7bb876b422.dir
+      size: 0
+      nfiles: 1
+  visualize:
+    cmd: python .\src\visualization\visualize.py .\models\model.joblib .\data\processed\
+    deps:
+    - path: .\data\processed\
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: .\models\model.joblib
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
+    - path: .\src\visualization\visualize.py
+      hash: md5
+      md5: db86d2e43c664f095353e9ba6afe3393
+      size: 3687
+    outs:
+    - path: dvclive
+      hash: md5
+      md5: d41d8cd98f00b204e9800998ecf8427e
+      size: 0
